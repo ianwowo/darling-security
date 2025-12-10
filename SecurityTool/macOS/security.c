@@ -747,6 +747,8 @@ const command commands[] =
         "Evaluates the given requirement string against the given cert chain.",
         "Evaluate a requirement against a cert chain." },
 #if TARGET_OS_OSX && TARGET_CPU_ARM64
+#warning  "filevault", fvunlock defined out as didn't compile on ARM64
+#if 0
     { "filevault" , fvunlock,
         "skip-sc-enforcement <data volume UUID> <operation>\n"
         "  data volume UUID can by obtained by running diskutil apfs list"
@@ -755,6 +757,7 @@ const command commands[] =
         "     reset      Resets any SmartCard overrides\n"
         "     status     Tells the current state of the SmartCard overrides\n",
         "Handles FileVault specific settings and overrides."},
+#endif
 #endif
     {}
 };
