@@ -99,7 +99,7 @@ if (BUILD_TARGET_64BIT)
 	)
 
 	set (generate-security-exp-depends ${generate-security-exp-depends}
-		${CMAKE_CURRENT_BINARY_DIR}/Security.x86_64.exp
+		${CMAKE_CURRENT_BINARY_DIR}/Security.${APPLE_ARCH_64BIT}.exp
 	)
 endif ()
 
@@ -318,6 +318,28 @@ if (BUILD_TARGET_64BIT)
 		-Wl,-upward_library,$<TARGET_FILE:Foundation>
 	)
 endif ()
+
+if (TARGET_ARM64)
+	add_dependencies(Security_${APPLE_ARCH_64BIT}_firstpass
+		generate-security-exp
+	)
+
+	add_dependencies(Security_${APPLE_ARCH_64BIT}
+		generate-security-exp
+		Foundation
+	)
+
+	target_link_options(Security_${APPLE_ARCH_64BIT}_firstpass PRIVATE
+		-Wl,-exported_symbols_list,${CMAKE_CURRENT_BINARY_DIR}/Security.${APPLE_ARCH_64BIT}.exp
+	)
+
+	target_link_options(Security_${APPLE_ARCH_64BIT} PRIVATE
+		-Wl,-dead_strip
+		-Wl,-exported_symbols_list,${CMAKE_CURRENT_BINARY_DIR}/Security.${APPLE_ARCH_64BIT}.exp
+		-Wl,-upward_library,$<TARGET_FILE:Foundation>
+	)
+endif ()
+
 if (BUILD_TARGET_32BIT)
 	add_dependencies(Security_${APPLE_ARCH_32BIT}_firstpass
 		generate-security-exp
