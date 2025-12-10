@@ -157,9 +157,12 @@ SecKeyRef SecCertificateCopyKey(SecCertificateRef certificate)
     API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0), bridgeos(3.0));
 
 #if TARGET_OS_OSX && TARGET_CPU_ARM64
-#define SEC_SUFFIX_LEGACYMAC(symbol) __asm("_" __STRING(symbol) "$LEGACYMAC")
+//#define SEC_SUFFIX_LEGACYMAC(symbol) __asm("_" __STRING(symbol) "$LEGACYMAC")
+#define SEC_SUFFIX_LEGACYMAC(symbol)
+#define SEC_PREFIX_ARM64_LINKER_ERROR_WORKAROUND inline
 #else
 #define SEC_SUFFIX_LEGACYMAC(symbol) /**/
+#define SEC_PREFIX_ARM64_LINKER_ERROR_WORKAROUND
 #endif
 
 #if TARGET_OS_IPHONE
@@ -184,6 +187,7 @@ SecKeyRef SecCertificateCopyPublicKey(SecCertificateRef certificate)
  @result A result code. See "Security Error Codes" (SecBase.h).
  @discussion NOTE: Deprecated in macOS 10.14; use SecCertificateCopyKey instead for cross-platform availability.
  */
+inline
 OSStatus SecCertificateCopyPublicKey(SecCertificateRef certificate, SecKeyRef * __nonnull CF_RETURNS_RETAINED key)
     SEC_SUFFIX_LEGACYMAC(SecCertificateCopyPublicKey)
     API_DEPRECATED_WITH_REPLACEMENT("SecCertificateCopyKey", macos(10.3, 10.14)) API_UNAVAILABLE(ios, tvos, watchos, bridgeos, macCatalyst);
@@ -221,6 +225,7 @@ CFDataRef SecCertificateCopySerialNumber(SecCertificateRef certificate)
  @discussion Return the content of a DER-encoded integer (without the tag and length fields) for this certificate's serial number. The caller must CFRelease the value returned. NOTE: Deprecated in macOS 10.13; use SecCertificateCopySerialNumberData instead for cross-platform availability.
  */
 __nullable
+SEC_PREFIX_ARM64_LINKER_ERROR_WORKAROUND
 CFDataRef SecCertificateCopySerialNumber(SecCertificateRef certificate, CFErrorRef *error)
     SEC_SUFFIX_LEGACYMAC(SecCertificateCopySerialNumber)
     API_DEPRECATED_WITH_REPLACEMENT("SecCertificateCopySerialNumberData", macos(10.7, 10.13)) API_UNAVAILABLE(ios, tvos, watchos, bridgeos, macCatalyst);

@@ -4338,6 +4338,11 @@ extern CFDataRef SecCertificateCopySerialNumber_ios(SecCertificateRef certificat
 CFDataRef SecCertificateCopySerialNumber_ios(SecCertificateRef certificate) {
     return SecCertificateCopySerialNumberData(certificate, NULL);
 }
+CFDataRef SecCertificateCopySerialNumber$LEGACYMAC(SecCertificateRef certificate)
+{
+    printf("STUB: SecCertificateCopySerialNumber$LEGACYMAC\n");
+	return SecCertificateCopySerialNumberData(certificate, NULL);
+}
 #endif
 
 #if !TARGET_OS_OSX
@@ -5317,20 +5322,37 @@ const DERItem *SecCertificateGetPublicKeyData(SecCertificateRef certificate) {
 }
 
 #if TARGET_OS_OSX
+__nullable SecKeyRef SecCertificateCopyPublicKey_ios(SecCertificateRef certificate)
+{
+    printf("STUB: SecCertificateCopyPublicKey_ios\n");
+    return SecCertificateCopyKey(certificate);
+}
 #if TARGET_CPU_ARM64
 /* force this implementation to be _SecCertificateCopyPublicKey on arm64 macOS.
    note: the legacy function in SecCertificate.cpp is now _SecCertificateCopyPublicKey$LEGACYMAC
    when both TARGET_OS_OSX and TARGET_CPU_ARM64 are true.
  */
-extern __nullable SecKeyRef SecCertificateCopyPublicKey_ios(SecCertificateRef certificate) __asm("_SecCertificateCopyPublicKey");
+//extern __nullable SecKeyRef SecCertificateCopyPublicKey_ios(SecCertificateRef certificate) __asm("_SecCertificateCopyPublicKey");
+
+OSStatus SecCertificateCopyPublicKey$LEGACYMAC(SecCertificateRef certificate, SecKeyRef * __nonnull CF_RETURNS_RETAINED key)
+{
+    printf("STUB: SecCertificateCopyPublicKey$LEGACYMAC\n");
+    return 0;
+}
 #endif /* TARGET_CPU_ARM64 */
-__nullable SecKeyRef SecCertificateCopyPublicKey_ios(SecCertificateRef certificate)
+
+OSStatus SecCertificateCopyPublicKey(SecCertificateRef certificate, SecKeyRef * __nonnull CF_RETURNS_RETAINED key)
+{
+    printf("STUB: SecCertificateCopyPublicKey\n");
+    return 0;
+}
+
 #else /* !TARGET_OS_OSX */
 __nullable SecKeyRef SecCertificateCopyPublicKey(SecCertificateRef certificate)
-#endif
 {
     return SecCertificateCopyKey(certificate);
 }
+#endif
 
 SecKeyRef SecCertificateCopyKey(SecCertificateRef certificate) {
     if (certificate->_pubKey == NULL) {
